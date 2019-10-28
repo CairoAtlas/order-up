@@ -70,6 +70,7 @@ class Office:
     @staticmethod
     def get_office_by_id(office_id):
         office_record = office_pynamo.Office.get(office_id)
+        print(office_record)
         return office_schema.Office(
             office_record.office_id,
             office_record.city,

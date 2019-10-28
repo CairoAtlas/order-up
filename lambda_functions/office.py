@@ -63,6 +63,7 @@ def handle_create(event):
 
 def build_office_object(event):
     request_payload = json.loads(event['body'])
+
     office = office_model.Office(
         request_payload['city'],
         request_payload['phone'],
@@ -73,4 +74,8 @@ def build_office_object(event):
         request_payload['territory'],
         request_payload.get('address2'),
     )
+
+    if request_payload.get('office_id'):
+        office.office_id = request_payload['office_id']
+
     return office

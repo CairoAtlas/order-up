@@ -12,7 +12,7 @@ class Office(Model):
     class Meta:
         table_name = OFFICE_TABLE_NAME
 
-    office_id = UnicodeAttribute()
+    office_id = UnicodeAttribute(hash_key=True)
     city = UnicodeAttribute()
     phone = UnicodeAttribute()
     address1 = UnicodeAttribute()
