@@ -1,0 +1,38 @@
+---
+Office:
+  name: ${self:service}-${self:provider.stage}-office
+  handler: lambda_functions/office.handler
+  description: Lambda function that performs CRUD operations on office table
+  layers:
+    - {Ref: PythonRequirementsLambdaLayer}
+  memorySize: 128
+  timeout: 10
+  package:
+    include:
+      - lambda_functions/office.py
+  events:
+    - http:
+        path: office
+        method: get
+        cors: true
+        authorizer:
+          type: aws_iam
+    - http:
+        path: office/{office_id}
+        method: get
+        cors: true
+        authorizer:
+          type: aws_iam
+    - http:
+        path: office
+        method: post
+        cors: true
+        authorizer:
+          type: aws_iam
+    - http:
+        path: office
+        method: patch
+        cors: true
+        authorizer:
+          type: aws_iam
+  role: OfficeLambdaRole
