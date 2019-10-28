@@ -22,17 +22,34 @@ def handler(event, context):
 
 def handle_get(event):
     if event.get('pathParameters'):
-        try:
-            office_id = event['pathParameters']['office_id']
-            LOGGER.info(f'Getting office by ID {office_id}')
-            item = office_model.Office.get_office_by_id(office_id)
-            return http_responses.http_200_response(response_body_dict=item)
-        except (json.decoder.JSONDecodeError, KeyError):
-            LOGGER.exception('Issue with request')
-            return http_responses.http_400_response()
-        except:
-            LOGGER.exception('Issue handling request')
-            return http_responses.http_500_response()
+        return handle_get_by_id(event)
+
+    return handle_general_search(dict() if not event.get('queryStringParameters') else event['queryStringParameters'])
+
+
+def handle_general_search(query_string_parameters):
+    try:
+        limit = int(query_string_parameters.get('limit', '50'))
+        start = query_string_parameters.get('start')
+        items = office_model.Office.scan(start, limit)
+        return http_responses.http_200_response(response_body_dict=items)
+    except:
+        LOGGER.exception('Issue with request')
+        return http_responses.http_500_response()
+
+
+def handle_get_by_id(event):
+    try:
+        office_id = event['pathParameters']['office_id']
+        LOGGER.info(f'Getting office by ID {office_id}')
+        item = office_model.Office.get_office_by_id(office_id)
+        return http_responses.http_200_response(response_body_dict=item)
+    except (json.decoder.JSONDecodeError, KeyError):
+        LOGGER.exception('Issue with request')
+        return http_responses.http_400_response()
+    except:
+        LOGGER.exception('Issue handling request')
+        return http_responses.http_500_response()
 
 
 def handle_update(event):
